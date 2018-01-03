@@ -1,35 +1,32 @@
 <?php
 /**
- * The template for displaying the footer.
+ * The template for displaying the footer
  *
- * Contains the closing of the #content div and all content after
+ * Contains the closing of the "site-content" div and all content after.
  *
- * @package Sydney
+ * @package WordPress
+ * @subpackage Twenty_Fifteen
+ * @since Twenty Fifteen 1.0
  */
 ?>
-			</div>
-		</div>
-	</div><!-- #content -->
 
-	<?php do_action('sydney_before_footer'); ?>
+	</div><!-- .site-content -->
 
-	<?php if ( is_active_sidebar( 'footer-1' ) ) : ?>
-		<?php get_sidebar('footer'); ?>
-	<?php endif; ?>
-
-    <a class="go-top"><i class="fa fa-angle-up"></i></a>
-		
 	<footer id="colophon" class="site-footer" role="contentinfo">
-		<div class="site-info container">
-			<a href="<?php echo esc_url( __( 'http://wordpress.org/', 'sydney' ) ); ?>"><?php printf( __( 'Proudly powered by %s', 'sydney' ), 'WordPress' ); ?></a>
-			<span class="sep"> | </span>
-			<?php printf( __( 'Theme: %2$s by %1$s.', 'sydney' ), 'aThemes', '<a href="https://athemes.com/theme/sydney" rel="designer">Sydney</a>' ); ?>
+		<div class="site-info">
+			<?php
+				/**
+				 * Fires before the Twenty Fifteen footer text for footer customization.
+				 *
+				 * @since Twenty Fifteen 1.0
+				 */
+				do_action( 'twentyfifteen_credits' );
+			?>
+			<a href="<?php echo esc_url( __( 'https://wordpress.org/', 'twentyfifteen' ) ); ?>"><?php printf( __( 'Proudly powered by %s', 'twentyfifteen' ), 'WordPress' ); ?></a>
 		</div><!-- .site-info -->
-	</footer><!-- #colophon -->
+	</footer><!-- .site-footer -->
 
-	<?php do_action('sydney_after_footer'); ?>
-
-</div><!-- #page -->
+</div><!-- .site -->
 
 <?php wp_footer(); ?>
 

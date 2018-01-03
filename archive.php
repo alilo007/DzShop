@@ -1,69 +1,64 @@
 <?php
 /**
- * The template for displaying archive pages.
+ * The template for displaying archive pages
  *
- * Learn more: http://codex.wordpress.org/Template_Hierarchy
+ * Used to display archive-type pages if nothing more specific matches a query.
+ * For example, puts together date-based pages if no date.php file exists.
  *
- * @package Sydney
+ * If you'd like to further customize these archive views, you may create a
+ * new template file for each one. For example, tag.php (Tag archives),
+ * category.php (Category archives), author.php (Author archives), etc.
+ *
+ * @link https://codex.wordpress.org/Template_Hierarchy
+ *
+ * @package WordPress
+ * @subpackage Twenty_Fifteen
+ * @since Twenty Fifteen 1.0
  */
 
-get_header(); 
+get_header(); ?>
 
-$layout = sydney_blog_layout();
-
-?>
-
-	<?php do_action('sydney_before_content'); ?>
-
-	<div id="primary" class="content-area col-md-9 <?php echo esc_attr( $layout ); ?>">
-
-		<?php sydney_yoast_seo_breadcrumbs(); ?>
-
-		<main id="main" class="post-wrap" role="main">
+	<section id="primary" class="content-area">
+		<main id="main" class="site-main" role="main">
 
 		<?php if ( have_posts() ) : ?>
 
 			<header class="page-header">
 				<?php
-					the_archive_title( '<h3 class="archive-title">', '</h3>' );
+					the_archive_title( '<h1 class="page-title">', '</h1>' );
 					the_archive_description( '<div class="taxonomy-description">', '</div>' );
 				?>
 			</header><!-- .page-header -->
 
-			<div class="posts-layout">
-			<?php while ( have_posts() ) : the_post(); ?>
+			<?php
+			// Start the Loop.
+			while ( have_posts() ) : the_post();
 
-				<?php
-					if ( $layout != 'classic-alt' ) {
-						get_template_part( 'content', get_post_format() );
-					} else {
-						get_template_part( 'content', 'classic-alt' );
-					}
-				?>
+				/*
+				 * Include the Post-Format-specific template for the content.
+				 * If you want to override this in a child theme, then include a file
+				 * called content-___.php (where ___ is the Post Format name) and that will be used instead.
+				 */
+				get_template_part( 'content', get_post_format() );
 
-			<?php endwhile; ?>
-			</div>
-			
-		<?php
+			// End the loop.
+			endwhile;
+
+			// Previous/next page navigation.
 			the_posts_pagination( array(
-				'mid_size'  => 1,
+				'prev_text'          => __( 'Previous page', 'twentyfifteen' ),
+				'next_text'          => __( 'Next page', 'twentyfifteen' ),
+				'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentyfifteen' ) . ' </span>',
 			) );
-		?>	
 
-		<?php else : ?>
+		// If no content, include the "No posts found" template.
+		else :
+			get_template_part( 'content', 'none' );
 
-			<?php get_template_part( 'content', 'none' ); ?>
+		endif;
+		?>
 
-		<?php endif; ?>
+		</main><!-- .site-main -->
+	</section><!-- .content-area -->
 
-		</main><!-- #main -->
-	</div><!-- #primary -->
-
-	<?php do_action('sydney_after_content'); ?>
-
-<?php 
-	if ( ( $layout == 'classic-alt' ) || ( $layout == 'classic' ) ) :
-	get_sidebar();
-	endif;
-?>
 <?php get_footer(); ?>

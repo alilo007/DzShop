@@ -1,37 +1,68 @@
 <?php
 /**
- * Sydney functions and definitions
+ * Twenty Fifteen functions and definitions
  *
- * @package Sydney
+ * Set up the theme and provides some helper functions, which are used in the
+ * theme as custom template tags. Others are attached to action and filter
+ * hooks in WordPress to change core functionality.
+ *
+ * When using a child theme you can override certain functions (those wrapped
+ * in a function_exists() call) by defining them first in your child theme's
+ * functions.php file. The child theme's functions.php file is included before
+ * the parent theme's file, so the child theme functions would be used.
+ *
+ * @link https://codex.wordpress.org/Theme_Development
+ * @link https://codex.wordpress.org/Child_Themes
+ *
+ * Functions that are not pluggable (not wrapped in function_exists()) are
+ * instead attached to a filter or action hook.
+ *
+ * For more information on hooks, actions, and filters,
+ * {@link https://codex.wordpress.org/Plugin_API}
+ *
+ * @package WordPress
+ * @subpackage Twenty_Fifteen
+ * @since Twenty Fifteen 1.0
  */
 
+/**
+ * Set the content width based on the theme's design and stylesheet.
+ *
+ * @since Twenty Fifteen 1.0
+ */
+if ( ! isset( $content_width ) ) {
+	$content_width = 660;
+}
 
-if ( ! function_exists( 'sydney_setup' ) ) :
+/**
+ * Twenty Fifteen only works in WordPress 4.1 or later.
+ */
+if ( version_compare( $GLOBALS['wp_version'], '4.1-alpha', '<' ) ) {
+	require get_template_directory() . '/inc/back-compat.php';
+}
+
+if ( ! function_exists( 'twentyfifteen_setup' ) ) :
 /**
  * Sets up theme defaults and registers support for various WordPress features.
  *
  * Note that this function is hooked into the after_setup_theme hook, which
  * runs before the init hook. The init hook is too late for some features, such
  * as indicating support for post thumbnails.
+ *
+ * @since Twenty Fifteen 1.0
  */
-function sydney_setup() {
+function twentyfifteen_setup() {
 
 	/*
 	 * Make theme available for translation.
-	 * Translations can be filed in the /languages/ directory.
-	 * If you're building a theme based on Sydney, use a find and replace
-	 * to change 'sydney' to the name of your theme in all the template files
+	 * Translations can be filed at WordPress.org. See: https://translate.wordpress.org/projects/wp-themes/twentyfifteen
+	 * If you're building a theme based on twentyfifteen, use a find and replace
+	 * to change 'twentyfifteen' to the name of your theme in all the template files
 	 */
-	load_theme_textdomain( 'sydney', get_template_directory() . '/languages' );
+	load_theme_textdomain( 'twentyfifteen' );
 
 	// Add default posts and comments RSS feed links to head.
 	add_theme_support( 'automatic-feed-links' );
-
-	// Content width
-	global $content_width;
-	if ( ! isset( $content_width ) ) {
-		$content_width = 1170; /* pixels */
-	}
 
 	/*
 	 * Let WordPress manage the document title.
@@ -44,18 +75,15 @@ function sydney_setup() {
 	/*
 	 * Enable support for Post Thumbnails on posts and pages.
 	 *
-	 * @link http://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
+	 * See: https://codex.wordpress.org/Function_Reference/add_theme_support#Post_Thumbnails
 	 */
 	add_theme_support( 'post-thumbnails' );
-	add_image_size('sydney-large-thumb', 830);
-	add_image_size('sydney-medium-thumb', 550, 400, true);
-	add_image_size('sydney-small-thumb', 230);
-	add_image_size('sydney-service-thumb', 350);
-	add_image_size('sydney-mas-thumb', 480);
+	set_post_thumbnail_size( 825, 510, true );
 
-	// This theme uses wp_nav_menu() in one location.
+	// This theme uses wp_nav_menu() in two locations.
 	register_nav_menus( array(
-		'primary' => __( 'Primary Menu', 'sydney' ),
+		'primary' => __( 'Primary Menu',      'twentyfifteen' ),
+		'social'  => __( 'Social Links Menu', 'twentyfifteen' ),
 	) );
 
 	/*
@@ -63,381 +91,337 @@ function sydney_setup() {
 	 * to output valid HTML5.
 	 */
 	add_theme_support( 'html5', array(
-		'search-form', 'comment-form', 'comment-list', 'gallery', 'caption',
+		'search-form', 'comment-form', 'comment-list', 'gallery', 'caption'
 	) );
 
 	/*
 	 * Enable support for Post Formats.
-	 * See http://codex.wordpress.org/Post_Formats
+	 *
+	 * See: https://codex.wordpress.org/Post_Formats
 	 */
 	add_theme_support( 'post-formats', array(
-		'aside', 'image', 'video', 'quote', 'link',
+		'aside', 'image', 'video', 'quote', 'link', 'gallery', 'status', 'audio', 'chat'
 	) );
 
-	// Set up the WordPress core custom background feature.
-	add_theme_support( 'custom-background', apply_filters( 'sydney_custom_background_args', array(
-		'default-color' => 'ffffff',
-		'default-image' => '',
+	/*
+	 * Enable support for custom logo.
+	 *
+	 * @since Twenty Fifteen 1.5
+	 */
+	add_theme_support( 'custom-logo', array(
+		'height'      => 248,
+		'width'       => 248,
+		'flex-height' => true,
+	) );
+
+	$color_scheme  = twentyfifteen_get_color_scheme();
+	$default_color = trim( $color_scheme[0], '#' );
+
+	// Setup the WordPress core custom background feature.
+
+	/**
+	 * Filter Twenty Fifteen custom-header support arguments.
+	 *
+	 * @since Twenty Fifteen 1.0
+	 *
+	 * @param array $args {
+	 *     An array of custom-header support arguments.
+	 *
+	 *     @type string $default-color     		Default color of the header.
+	 *     @type string $default-attachment     Default attachment of the header.
+	 * }
+	 */
+	add_theme_support( 'custom-background', apply_filters( 'twentyfifteen_custom_background_args', array(
+		'default-color'      => $default_color,
+		'default-attachment' => 'fixed',
 	) ) );
+
+	/*
+	 * This theme styles the visual editor to resemble the theme style,
+	 * specifically font, colors, icons, and column width.
+	 */
+	add_editor_style( array( 'css/editor-style.css', 'genericons/genericons.css', twentyfifteen_fonts_url() ) );
+
+	// Indicate widget sidebars can use selective refresh in the Customizer.
+	add_theme_support( 'customize-selective-refresh-widgets' );
 }
-endif; // sydney_setup
-add_action( 'after_setup_theme', 'sydney_setup' );
+endif; // twentyfifteen_setup
+add_action( 'after_setup_theme', 'twentyfifteen_setup' );
 
 /**
  * Register widget area.
  *
- * @link http://codex.wordpress.org/Function_Reference/register_sidebar
+ * @since Twenty Fifteen 1.0
+ *
+ * @link https://codex.wordpress.org/Function_Reference/register_sidebar
  */
-function sydney_widgets_init() {
+function twentyfifteen_widgets_init() {
 	register_sidebar( array(
-		'name'          => __( 'Sidebar', 'sydney' ),
+		'name'          => __( 'Widget Area', 'twentyfifteen' ),
 		'id'            => 'sidebar-1',
-		'description'   => '',
+		'description'   => __( 'Add widgets here to appear in your sidebar.', 'twentyfifteen' ),
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside>',
-		'before_title'  => '<h3 class="widget-title">',
-		'after_title'   => '</h3>',
+		'before_title'  => '<h2 class="widget-title">',
+		'after_title'   => '</h2>',
 	) );
-
-	//Footer widget areas
-	$widget_areas = get_theme_mod('footer_widget_areas', '3');
-	for ($i=1; $i<=$widget_areas; $i++) {
-		register_sidebar( array(
-			'name'          => __( 'Footer ', 'sydney' ) . $i,
-			'id'            => 'footer-' . $i,
-			'description'   => '',
-			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-			'after_widget'  => '</aside>',
-			'before_title'  => '<h3 class="widget-title">',
-			'after_title'   => '</h3>',
-		) );
-	}
-
-	//Register the front page widgets
-	if ( defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
-		register_widget( 'Sydney_List' );
-		register_widget( 'Sydney_Services_Type_A' );
-		register_widget( 'Sydney_Services_Type_B' );
-		register_widget( 'Sydney_Facts' );
-		register_widget( 'Sydney_Clients' );
-		register_widget( 'Sydney_Testimonials' );
-		register_widget( 'Sydney_Skills' );
-		register_widget( 'Sydney_Action' );
-		register_widget( 'Sydney_Video_Widget' );
-		register_widget( 'Sydney_Social_Profile' );
-		register_widget( 'Sydney_Employees' );
-		register_widget( 'Sydney_Latest_News' );
-		register_widget( 'Sydney_Contact_Info' );
-		register_widget( 'Sydney_Portfolio' );
-	}
-
 }
-add_action( 'widgets_init', 'sydney_widgets_init' );
+add_action( 'widgets_init', 'twentyfifteen_widgets_init' );
+
+if ( ! function_exists( 'twentyfifteen_fonts_url' ) ) :
+/**
+ * Register Google fonts for Twenty Fifteen.
+ *
+ * @since Twenty Fifteen 1.0
+ *
+ * @return string Google fonts URL for the theme.
+ */
+function twentyfifteen_fonts_url() {
+	$fonts_url = '';
+	$fonts     = array();
+	$subsets   = 'latin,latin-ext';
+
+	/*
+	 * Translators: If there are characters in your language that are not supported
+	 * by Noto Sans, translate this to 'off'. Do not translate into your own language.
+	 */
+	if ( 'off' !== _x( 'on', 'Noto Sans font: on or off', 'twentyfifteen' ) ) {
+		$fonts[] = 'Noto Sans:400italic,700italic,400,700';
+	}
+
+	/*
+	 * Translators: If there are characters in your language that are not supported
+	 * by Noto Serif, translate this to 'off'. Do not translate into your own language.
+	 */
+	if ( 'off' !== _x( 'on', 'Noto Serif font: on or off', 'twentyfifteen' ) ) {
+		$fonts[] = 'Noto Serif:400italic,700italic,400,700';
+	}
+
+	/*
+	 * Translators: If there are characters in your language that are not supported
+	 * by Inconsolata, translate this to 'off'. Do not translate into your own language.
+	 */
+	if ( 'off' !== _x( 'on', 'Inconsolata font: on or off', 'twentyfifteen' ) ) {
+		$fonts[] = 'Inconsolata:400,700';
+	}
+
+	/*
+	 * Translators: To add an additional character subset specific to your language,
+	 * translate this to 'greek', 'cyrillic', 'devanagari' or 'vietnamese'. Do not translate into your own language.
+	 */
+	$subset = _x( 'no-subset', 'Add new subset (greek, cyrillic, devanagari, vietnamese)', 'twentyfifteen' );
+
+	if ( 'cyrillic' == $subset ) {
+		$subsets .= ',cyrillic,cyrillic-ext';
+	} elseif ( 'greek' == $subset ) {
+		$subsets .= ',greek,greek-ext';
+	} elseif ( 'devanagari' == $subset ) {
+		$subsets .= ',devanagari';
+	} elseif ( 'vietnamese' == $subset ) {
+		$subsets .= ',vietnamese';
+	}
+
+	if ( $fonts ) {
+		$fonts_url = add_query_arg( array(
+			'family' => urlencode( implode( '|', $fonts ) ),
+			'subset' => urlencode( $subsets ),
+		), 'https://fonts.googleapis.com/css' );
+	}
+
+	return $fonts_url;
+}
+endif;
 
 /**
- * Load the front page widgets.
+ * JavaScript Detection.
+ *
+ * Adds a `js` class to the root `<html>` element when JavaScript is detected.
+ *
+ * @since Twenty Fifteen 1.1
  */
-if ( defined( 'SITEORIGIN_PANELS_VERSION' ) ) {
-	require get_template_directory() . "/widgets/fp-list.php";
-	require get_template_directory() . "/widgets/fp-services-type-a.php";
-	require get_template_directory() . "/widgets/fp-services-type-b.php";
-	require get_template_directory() . "/widgets/fp-facts.php";
-	require get_template_directory() . "/widgets/fp-clients.php";
-	require get_template_directory() . "/widgets/fp-testimonials.php";
-	require get_template_directory() . "/widgets/fp-skills.php";
-	require get_template_directory() . "/widgets/fp-call-to-action.php";
-	require get_template_directory() . "/widgets/video-widget.php";
-	require get_template_directory() . "/widgets/fp-social.php";
-	require get_template_directory() . "/widgets/fp-employees.php";
-	require get_template_directory() . "/widgets/fp-latest-news.php";
-	require get_template_directory() . "/widgets/fp-portfolio.php";
-	require get_template_directory() . "/widgets/contact-info.php";
+function twentyfifteen_javascript_detection() {
+	echo "<script>(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>\n";
 }
+add_action( 'wp_head', 'twentyfifteen_javascript_detection', 0 );
 
 /**
  * Enqueue scripts and styles.
+ *
+ * @since Twenty Fifteen 1.0
  */
-function sydney_scripts() {
+function twentyfifteen_scripts() {
+	// Add custom fonts, used in the main stylesheet.
+	wp_enqueue_style( 'twentyfifteen-fonts', twentyfifteen_fonts_url(), array(), null );
 
-	wp_enqueue_style( 'sydney-fonts', esc_url( sydney_google_fonts() ), array(), null );
+	// Add Genericons, used in the main stylesheet.
+	wp_enqueue_style( 'genericons', get_template_directory_uri() . '/genericons/genericons.css', array(), '3.2' );
 
-	wp_enqueue_style( 'sydney-style', get_stylesheet_uri(), '', '20170504' );
+	// Load our main stylesheet.
+	wp_enqueue_style( 'twentyfifteen-style', get_stylesheet_uri() );
 
-	wp_enqueue_style( 'sydney-font-awesome', get_template_directory_uri() . '/fonts/font-awesome.min.css' );
+	// Load the Internet Explorer specific stylesheet.
+	wp_enqueue_style( 'twentyfifteen-ie', get_template_directory_uri() . '/css/ie.css', array( 'twentyfifteen-style' ), '20141010' );
+	wp_style_add_data( 'twentyfifteen-ie', 'conditional', 'lt IE 9' );
 
-	wp_enqueue_style( 'sydney-ie9', get_template_directory_uri() . '/css/ie9.css', array( 'sydney-style' ) );
-	wp_style_add_data( 'sydney-ie9', 'conditional', 'lte IE 9' );
+	// Load the Internet Explorer 7 specific stylesheet.
+	wp_enqueue_style( 'twentyfifteen-ie7', get_template_directory_uri() . '/css/ie7.css', array( 'twentyfifteen-style' ), '20141010' );
+	wp_style_add_data( 'twentyfifteen-ie7', 'conditional', 'lt IE 8' );
 
-	wp_enqueue_script( 'sydney-scripts', get_template_directory_uri() . '/js/scripts.js', array('jquery'),'', true );
-
-	wp_enqueue_script( 'sydney-main', get_template_directory_uri() . '/js/main.min.js', array('jquery'),'20170504', true );
-
-	wp_enqueue_script( 'sydney-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
-
-	if ( get_theme_mod('blog_layout') == 'masonry-layout' && (is_home() || is_archive()) ) {
-
-		wp_enqueue_script( 'sydney-masonry-init', get_template_directory_uri() . '/js/masonry-init.js', array('masonry'),'', true );
-	}
+	wp_enqueue_script( 'twentyfifteen-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20141010', true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
-}
-add_action( 'wp_enqueue_scripts', 'sydney_scripts' );
 
-/**
- * Fonts
- */
-if ( !function_exists('sydney_google_fonts') ) :
-function sydney_google_fonts() {
-	$body_font 		= get_theme_mod('body_font_name', 'Source+Sans+Pro:400,400italic,600');
-	$headings_font 	= get_theme_mod('headings_font_name', 'Raleway:400,500,600');
-
-	$fonts     		= array();
-	$fonts[] 		= esc_attr( str_replace( '+', ' ', $body_font ) );
-	$fonts[] 		= esc_attr( str_replace( '+', ' ', $headings_font ) );
-
-	if ( $fonts ) {
-		$fonts_url = add_query_arg( array(
-			'family' => urlencode( implode( '|', $fonts ) )
-		), 'https://fonts.googleapis.com/css' );
+	if ( is_singular() && wp_attachment_is_image() ) {
+		wp_enqueue_script( 'twentyfifteen-keyboard-image-navigation', get_template_directory_uri() . '/js/keyboard-image-navigation.js', array( 'jquery' ), '20141010' );
 	}
 
-	return $fonts_url;	
+	wp_enqueue_script( 'twentyfifteen-script', get_template_directory_uri() . '/js/functions.js', array( 'jquery' ), '20150330', true );
+	wp_localize_script( 'twentyfifteen-script', 'screenReaderText', array(
+		'expand'   => '<span class="screen-reader-text">' . __( 'expand child menu', 'twentyfifteen' ) . '</span>',
+		'collapse' => '<span class="screen-reader-text">' . __( 'collapse child menu', 'twentyfifteen' ) . '</span>',
+	) );
 }
-endif;
+add_action( 'wp_enqueue_scripts', 'twentyfifteen_scripts' );
 
 /**
- * Enqueue Bootstrap
+ * Add preconnect for Google Fonts.
+ *
+ * @since Twenty Fifteen 1.7
+ *
+ * @param array   $urls          URLs to print for resource hints.
+ * @param string  $relation_type The relation type the URLs are printed.
+ * @return array URLs to print for resource hints.
  */
-function sydney_enqueue_bootstrap() {
-	wp_enqueue_style( 'sydney-bootstrap', get_template_directory_uri() . '/css/bootstrap/bootstrap.min.css', array(), true );
-}
-add_action( 'wp_enqueue_scripts', 'sydney_enqueue_bootstrap', 9 );
-
-/**
- * Change the excerpt length
- */
-function sydney_excerpt_length( $length ) {
-
-  $excerpt = get_theme_mod('exc_lenght', '55');
-  return $excerpt;
-
-}
-add_filter( 'excerpt_length', 'sydney_excerpt_length', 999 );
-
-/**
- * Blog layout
- */
-function sydney_blog_layout() {
-	$layout = get_theme_mod('blog_layout','classic-alt');
-	return $layout;
-}
-
-/**
- * Menu fallback
- */
-function sydney_menu_fallback() {
-	if ( current_user_can('edit_theme_options') ) {
-		echo '<a class="menu-fallback" href="' . admin_url('nav-menus.php') . '">' . __( 'Create your menu here', 'sydney' ) . '</a>';
+function twentyfifteen_resource_hints( $urls, $relation_type ) {
+	if ( wp_style_is( 'twentyfifteen-fonts', 'queue' ) && 'preconnect' === $relation_type ) {
+		if ( version_compare( $GLOBALS['wp_version'], '4.7-alpha', '>=' ) ) {
+			$urls[] = array(
+				'href' => 'https://fonts.gstatic.com',
+				'crossorigin',
+			);
+		} else {
+			$urls[] = 'https://fonts.gstatic.com';
+		}
 	}
+
+	return $urls;
 }
+add_filter( 'wp_resource_hints', 'twentyfifteen_resource_hints', 10, 2 );
 
 /**
- * Header image overlay
+ * Add featured image as background image to post navigation elements.
+ *
+ * @since Twenty Fifteen 1.0
+ *
+ * @see wp_add_inline_style()
  */
-function sydney_header_overlay() {
-	$overlay = get_theme_mod( 'hide_overlay', 0);
-	if ( !$overlay ) {
-		echo '<div class="overlay"></div>';
-	}
-}
-
-/**
- * Header video
- */
-function sydney_header_video() {
-
-	if ( !function_exists('the_custom_header_markup') ) {
+function twentyfifteen_post_nav_background() {
+	if ( ! is_single() ) {
 		return;
 	}
 
-	$front_header_type 	= get_theme_mod( 'front_header_type' );
-	$site_header_type 	= get_theme_mod( 'site_header_type' );
+	$previous = ( is_attachment() ) ? get_post( get_post()->post_parent ) : get_adjacent_post( false, '', true );
+	$next     = get_adjacent_post( false, '', false );
+	$css      = '';
 
-	if ( ( get_theme_mod('front_header_type') == 'core-video' && is_front_page() || get_theme_mod('site_header_type') == 'core-video' && !is_front_page() ) ) {
-		the_custom_header_markup();
+	if ( is_attachment() && 'attachment' == $previous->post_type ) {
+		return;
 	}
-}
 
-/**
- * Polylang compatibility
- */
-if ( function_exists('pll_register_string') ) :
-function sydney_polylang() {
-	for ( $i=1; $i<=5; $i++) {
-		pll_register_string('Slide title ' . $i, get_theme_mod('slider_title_' . $i), 'Sydney');
-		pll_register_string('Slide subtitle ' . $i, get_theme_mod('slider_subtitle_' . $i), 'Sydney');
+	if ( $previous &&  has_post_thumbnail( $previous->ID ) ) {
+		$prevthumb = wp_get_attachment_image_src( get_post_thumbnail_id( $previous->ID ), 'post-thumbnail' );
+		$css .= '
+			.post-navigation .nav-previous { background-image: url(' . esc_url( $prevthumb[0] ) . '); }
+			.post-navigation .nav-previous .post-title, .post-navigation .nav-previous a:hover .post-title, .post-navigation .nav-previous .meta-nav { color: #fff; }
+			.post-navigation .nav-previous a:before { background-color: rgba(0, 0, 0, 0.4); }
+		';
 	}
-	pll_register_string('Slider button text', get_theme_mod('slider_button_text'), 'Sydney');
-	pll_register_string('Slider button URL', get_theme_mod('slider_button_url'), 'Sydney');
+
+	if ( $next && has_post_thumbnail( $next->ID ) ) {
+		$nextthumb = wp_get_attachment_image_src( get_post_thumbnail_id( $next->ID ), 'post-thumbnail' );
+		$css .= '
+			.post-navigation .nav-next { background-image: url(' . esc_url( $nextthumb[0] ) . '); border-top: 0; }
+			.post-navigation .nav-next .post-title, .post-navigation .nav-next a:hover .post-title, .post-navigation .nav-next .meta-nav { color: #fff; }
+			.post-navigation .nav-next a:before { background-color: rgba(0, 0, 0, 0.4); }
+		';
+	}
+
+	wp_add_inline_style( 'twentyfifteen-style', $css );
 }
-add_action( 'admin_init', 'sydney_polylang' );
-endif;
+add_action( 'wp_enqueue_scripts', 'twentyfifteen_post_nav_background' );
 
 /**
- * Preloader
+ * Display descriptions in main navigation.
+ *
+ * @since Twenty Fifteen 1.0
+ *
+ * @param string  $item_output The menu item output.
+ * @param WP_Post $item        Menu item object.
+ * @param int     $depth       Depth of the menu.
+ * @param array   $args        wp_nav_menu() arguments.
+ * @return string Menu item with possible description.
  */
-function sydney_preloader() {
-	?>
-	<div class="preloader">
-	    <div class="spinner">
-	        <div class="pre-bounce1"></div>
-	        <div class="pre-bounce2"></div>
-	    </div>
-	</div>
-	<?php
+function twentyfifteen_nav_description( $item_output, $item, $depth, $args ) {
+	if ( 'primary' == $args->theme_location && $item->description ) {
+		$item_output = str_replace( $args->link_after . '</a>', '<div class="menu-item-description">' . $item->description . '</div>' . $args->link_after . '</a>', $item_output );
+	}
+
+	return $item_output;
 }
-add_action('sydney_before_site', 'sydney_preloader');
+add_filter( 'walker_nav_menu_start_el', 'twentyfifteen_nav_description', 10, 4 );
 
 /**
- * Header clone
+ * Add a `screen-reader-text` class to the search form's submit button.
+ *
+ * @since Twenty Fifteen 1.0
+ *
+ * @param string $html Search form HTML.
+ * @return string Modified search form HTML.
  */
-function sydney_header_clone() {
-
-	$front_header_type 	= get_theme_mod('front_header_type','slider');
-	$site_header_type 	=get_theme_mod('site_header_type');
-
-	if ( ( $front_header_type == 'nothing' && is_front_page() ) || ( $site_header_type == 'nothing' && !is_front_page() ) ) { ?>
-	
-	<div class="header-clone"></div>
-
-	<?php }
+function twentyfifteen_search_form_modify( $html ) {
+	return str_replace( 'class="search-submit"', 'class="search-submit screen-reader-text"', $html );
 }
-add_action('sydney_before_header', 'sydney_header_clone');
+add_filter( 'get_search_form', 'twentyfifteen_search_form_modify' );
 
 /**
- * Get image alt
+ * Modifies tag cloud widget arguments to display all tags in the same font size
+ * and use list format for better accessibility.
+ *
+ * @since Twenty Fifteen 1.9
+ *
+ * @param array $args Arguments for tag cloud widget.
+ * @return array The filtered arguments for tag cloud widget.
  */
-function sydney_get_image_alt( $image ) {
-    global $wpdb;
+function twentyfifteen_widget_tag_cloud_args( $args ) {
+	$args['largest']  = 22;
+	$args['smallest'] = 8;
+	$args['unit']     = 'pt';
+	$args['format']   = 'list';
 
-    if( empty( $image ) ) {
-        return false;
-    }
-
-    $attachment  = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE guid='%s';", strtolower( $image ) ) );
-    $id   = ( ! empty( $attachment ) ) ? $attachment[0] : 0;
-
-    $alt = get_post_meta( $id, '_wp_attachment_image_alt', true );
-
-    return $alt;
+	return $args;
 }
+add_filter( 'widget_tag_cloud_args', 'twentyfifteen_widget_tag_cloud_args' );
+
 
 /**
  * Implement the Custom Header feature.
+ *
+ * @since Twenty Fifteen 1.0
  */
 require get_template_directory() . '/inc/custom-header.php';
 
 /**
  * Custom template tags for this theme.
+ *
+ * @since Twenty Fifteen 1.0
  */
 require get_template_directory() . '/inc/template-tags.php';
 
 /**
- * Custom functions that act independently of the theme templates.
- */
-require get_template_directory() . '/inc/extras.php';
-
-/**
  * Customizer additions.
+ *
+ * @since Twenty Fifteen 1.0
  */
 require get_template_directory() . '/inc/customizer.php';
-
-/**
- * Load Jetpack compatibility file.
- */
-require get_template_directory() . '/inc/jetpack.php';
-
-/**
- * Page builder support
- */
-require get_template_directory() . '/inc/page-builder.php';
-
-/**
- * Slider
- */
-require get_template_directory() . '/inc/slider.php';
-
-/**
- * Styles
- */
-require get_template_directory() . '/inc/styles.php';
-
-/**
- * Theme info
- */
-require get_template_directory() . '/inc/theme-info.php';
-
-/**
- * Woocommerce basic integration
- */
-require get_template_directory() . '/inc/woocommerce.php';
-
-/**
- * Upsell
- */
-require get_template_directory() . '/inc/upsell/class-customize.php';
-
-/**
- * Demo content
- */
-require_once dirname( __FILE__ ) . '/demo-content/setup.php';
-
-/**
- *TGM Plugin activation.
- */
-require_once dirname( __FILE__ ) . '/plugins/class-tgm-plugin-activation.php';
-
-add_action( 'tgmpa_register', 'sydney_recommend_plugin' );
-function sydney_recommend_plugin() {
-
-    $plugins[] = array(
-            'name'               => 'Page Builder by SiteOrigin',
-            'slug'               => 'siteorigin-panels',
-            'required'           => false,
-    );
-
-	if ( !function_exists('wpcf_init') ) {
-	    $plugins[] = array(
-		        'name'               => 'Sydney Toolbox - custom posts and fields for the Sydney theme',
-		        'slug'               => 'sydney-toolbox',
-		        'required'           => false,
-		);
-	}
-
-    tgmpa( $plugins);
-
-}
-
-/**
- * Admin notice
- */
-require get_template_directory() . '/inc/notices/persist-admin-notices-dismissal.php';
-
-function sydney_welcome_admin_notice() {
-	if ( ! PAnD::is_admin_notice_active( 'sydney-welcome-forever' ) ) {
-		return;
-	}
-	
-	?>
-	<div data-dismissible="sydney-welcome-forever" class="sydney-admin-notice updated notice notice-success is-dismissible">
-
-		<p><?php echo sprintf( __( 'Welcome to Sydney. To get started please make sure to visit our <a href="%s">welcome page</a>.', 'sydney' ), admin_url( 'themes.php?page=sydney-info.php' ) ); ?></p>
-		<a class="button" href="<?php echo admin_url( 'themes.php?page=sydney-info.php' ); ?>"><?php esc_html_e( 'Get started with Sydney', 'sydney' ); ?></a>
-
-	</div>
-	<?php
-}
-add_action( 'admin_init', array( 'PAnD', 'init' ) );
-add_action( 'admin_notices', 'sydney_welcome_admin_notice' );

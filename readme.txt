@@ -1,105 +1,106 @@
-I.Theme
-
-Sydney, Copyright 2015
-Sydney is licensed under GNU General Public License V2 or later. You can find a copy of it in the license.txt file.
-
-II. Resources
-
-a) Underscores
-Solon is based on Underscores. All the files in the theme package are from Underscores, unless stated otherwise.
-Resource URI: http://underscores.me/
-Copyright: Automattic, automattic.com
-License: GPLv2
+=== Twenty Fifteen ===
+Contributors: the WordPress team
+Requires at least: WordPress 4.1
+Tested up to: WordPress 5.0-trunk
+Version: 1.9
+License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Tags: blog, two-columns, left-sidebar, accessibility-ready, custom-background, custom-colors, custom-header, custom-logo, custom-menu, editor-style, featured-images, microformats, post-formats, rtl-language-support, sticky-post, threaded-comments, translation-ready
 
-b) Bootstrap
-All files from the /bootstrap folder are from the Bootstrap v3.1.1 package.
-Resource URI: http://getbootstrap.com/
-Copyright: 2011-2014 Twitter, Inc
-License: MIT
-License URI: http://opensource.org/licenses/MIT
+== Description ==
+Our 2015 default theme is clean, blog-focused, and designed for clarity. Twenty Fifteen's simple, straightforward typography is readable on a wide variety of screen sizes, and suitable for multiple languages. We designed it using a mobile-first approach, meaning your content takes center-stage, regardless of whether your visitors arrive by smartphone, tablet, laptop, or desktop computer.
 
-c) Icons
-The icon set used in Sydney is FontAwesome.
-Copyright: Dave Gandy
-Resource URI: http://fontawesome.io
-License: SIL Open Font License, Version 1.1
-License URI: https://scripts.sil.org/OFL?
+* Mobile-first, Responsive Layout
+* Custom Colors
+* Custom Header
+* Social Links
+* Menu Description
+* Post Formats
+* The GPL v2.0 or later license. :) Use it to make something cool.
 
-d) FitVids
-Copyright: Chris Coyier, Paravel
-Resource URI: http://fitvidsjs.com/
-License: WTFPL
-License URI: http://www.wtfpl.net/txt/copying/
+For more information about Twenty Fifteen please go to https://codex.wordpress.org/Twenty_Fifteen.
 
-e) jQuery Waypoints
-Copyright: 2011-2014 Caleb Troughton
-Resource URI: http://imakewebthings.com/jquery-waypoints/
-License: MIT
-License URI: http://opensource.org/licenses/MIT
+== Installation ==
 
-f) imagesLoaded
-Copyright: 2014 David DeSandro
-Resource URI: http://imagesloaded.desandro.com/
-License: MIT
-License URI: http://opensource.org/licenses/MIT
+1. In your admin panel, go to Appearance -> Themes and click the 'Add New' button.
+2. Type in Twenty Fifteen in the search form and press the 'Enter' key on your keyboard.
+3. Click on the 'Activate' button to use your new theme right away.
+4. Go to https://codex.wordpress.org/Twenty_Fifteen for a guide on how to customize this theme.
+5. Navigate to Appearance > Customize in your admin panel and customize to taste.
 
-g) Superslides
-Copyright: Nic Aitch
-Resource URI: https://github.com/nicinabox/superslides
-License: MIT
-License URI: http://opensource.org/licenses/MIT
+== Copyright ==
 
-h) OwlCarousel
-Copyright: 2013 Bartosz Wojciechowski
-Resource URI: http://www.owlgraphic.com/owlcarousel/
-License: MIT
-License URI: http://opensource.org/licenses/MIT
+Twenty Fifteen WordPress Theme, Copyright 2014-2017 WordPress.org & Automattic.com
+Twenty Fifteen is distributed under the terms of the GNU GPL
 
-i) Flexslider
-Copyright: 2013 WooThemes
-Resource URI: http://www.woothemes.com/flexslider/
-License: GPLv2
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
 
-j) jQuery CountTo
-Copyright: Matt Huggins
-Resource URI: https://github.com/mhuggins/jquery-countTo
-License: MIT
-License URI: http://opensource.org/licenses/MIT
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
-k) jQuery Parallax
-Copyright: Ian Lunn
-Resource URI: http://www.ianlunn.co.uk/plugins/jquery-parallax/
-License: MIT/GPL
-License URI: http://opensource.org/licenses/MIT
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Twenty Fifteen Theme bundles the following third-party resources:
 
-l) Isotope
-Copyright: Metafizzy
-Resource URI: http://isotope.metafizzy.co
-License: MIT/GPL
-License URI: http://opensource.org/licenses/MIT
-License URI: http://www.gnu.org/licenses/gpl-3.0.html
+HTML5 Shiv v3.7.0, Copyright 2014 Alexander Farkas
+Licenses: MIT/GPL2
+Source: https://github.com/aFarkas/html5shiv
 
-m) Images folder
-m1) Image 1 (also used in screenshot)
-Copyright: FirmBee
-Resource URI: http://pixabay.com/en/office-tax-business-finance-620822/
-License: CC0 1.0
-License URI: http://creativecommons.org/publicdomain/zero/1.0/deed.en
-m2) Image 2
-Copyright: FirmBee
-Resource URI: http://pixabay.com/en/smartphone-photo-phone-mobile-623722/
-License: CC0 1.0
-License URI: http://creativecommons.org/publicdomain/zero/1.0/deed.en
-m3) Image 3
-Copyright: StartupStockPhotos
-Resource URI: http://pixabay.com/en/entrepreneur-startup-start-up-man-593358/
-License: CC0 1.0
-License URI: http://creativecommons.org/publicdomain/zero/1.0/deed.en
+Genericons icon font, Copyright 2013-2017 Automattic.com
+License: GNU GPL, Version 2 (or later)
+Source: http://www.genericons.com
 
+== Changelog ==
 
-III. Documentation
+= 1.9 =
+* Released: November 14, 2017
 
-Theme documentation is available on http://athemes.com/documentation/sydney/
+https://codex.wordpress.org/Twenty_Fifteen_Theme_Changelog#Version_1.9
+
+= 1.8 =
+* Released: June 8, 2017
+
+https://codex.wordpress.org/Twenty_Fifteen_Theme_Changelog#Version_1.8
+
+= 1.7 =
+* Released: December 6, 2016
+
+https://codex.wordpress.org/Twenty_Fifteen_Theme_Changelog#Version_1.7
+
+= 1.6 =
+* Released: August 15, 2016
+
+https://codex.wordpress.org/Twenty_Fifteen_Theme_Changelog#Version_1.6
+
+= 1.5 =
+* Released: April 12, 2016
+
+https://codex.wordpress.org/Twenty_Fifteen_Theme_Changelog#Version_1.5
+
+= 1.4 =
+* Released: December 8, 2015
+
+https://codex.wordpress.org/Twenty_Fifteen_Theme_Changelog#Version_1.4
+
+= 1.3 =
+* Released: August 18, 2015
+
+https://codex.wordpress.org/Twenty_Fifteen_Theme_Changelog#Version_1.3
+
+= 1.2 =
+* Released: May 6, 2015
+
+https://codex.wordpress.org/Twenty_Fifteen_Theme_Changelog#Version_1.2
+
+= 1.1 =
+* Released: April 23, 2015
+
+https://codex.wordpress.org/Twenty_Fifteen_Theme_Changelog#Version_1.1
+
+= 1.0 =
+* Released: December 18, 2014
+
+Initial release

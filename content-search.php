@@ -1,41 +1,37 @@
 <?php
 /**
- * The template part for displaying results in search pages.
+ * The template part for displaying results in search pages
  *
- * Learn more: http://codex.wordpress.org/Template_Hierarchy
+ * Learn more: {@link https://codex.wordpress.org/Template_Hierarchy}
  *
- * @package Sydney
+ * @package WordPress
+ * @subpackage Twenty_Fifteen
+ * @since Twenty Fifteen 1.0
  */
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+	<?php twentyfifteen_post_thumbnail(); ?>
 
 	<header class="entry-header">
-		<?php the_title( sprintf( '<h2 class="title-post entry-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h2>' ); ?>
-
-		<?php if ( 'post' == get_post_type() && get_theme_mod('hide_meta_index') != 1 ) : ?>
-		<div class="meta-post">
-			<?php sydney_posted_on(); ?>
-		</div><!-- .entry-meta -->
-		<?php endif; ?>
+		<?php the_title( sprintf( '<h2 class="entry-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h2>' ); ?>
 	</header><!-- .entry-header -->
 
-	<div class="entry-post">
-		<?php if ( (get_theme_mod('full_content_home') == 1 && is_home() ) || (get_theme_mod('full_content_archives') == 1 && is_archive() ) ) : ?>
-			<?php the_content(); ?>
-		<?php else : ?>
-			<?php the_excerpt(); ?>
-		<?php endif; ?>
+	<div class="entry-summary">
+		<?php the_excerpt(); ?>
+	</div><!-- .entry-summary -->
 
-		<?php
-			wp_link_pages( array(
-				'before' => '<div class="page-links">' . __( 'Pages:', 'sydney' ),
-				'after'  => '</div>',
-			) );
-		?>
-	</div><!-- .entry-post -->
+	<?php if ( 'post' == get_post_type() ) : ?>
 
-	<footer class="entry-footer">
-		<?php sydney_entry_footer(); ?>
-	</footer><!-- .entry-footer -->
+		<footer class="entry-footer">
+			<?php twentyfifteen_entry_meta(); ?>
+			<?php edit_post_link( __( 'Edit', 'twentyfifteen' ), '<span class="edit-link">', '</span>' ); ?>
+		</footer><!-- .entry-footer -->
+
+	<?php else : ?>
+
+		<?php edit_post_link( __( 'Edit', 'twentyfifteen' ), '<footer class="entry-footer"><span class="edit-link">', '</span></footer><!-- .entry-footer -->' ); ?>
+
+	<?php endif; ?>
+
 </article><!-- #post-## -->

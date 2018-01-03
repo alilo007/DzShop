@@ -1,6 +1,6 @@
 <?php
 /**
- * The default template for displaying content
+ * The template for displaying link post formats
  *
  * Used for both single and index/archive/search.
  *
@@ -11,20 +11,18 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-	<?php
-		// Post thumbnail.
-		twentyfifteen_post_thumbnail();
-	?>
+	<?php twentyfifteen_post_thumbnail(); ?>
 
 	<header class="entry-header">
 		<?php
 			if ( is_single() ) :
-				the_title( '<h1 class="entry-title">', '</h1>' );
+				the_title( sprintf( '<h1 class="entry-title"><a href="%s">', esc_url( twentyfifteen_get_link_url() ) ), '</a></h1>' );
 			else :
-				the_title( sprintf( '<h2 class="entry-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h2>' );
+				the_title( sprintf( '<h2 class="entry-title"><a href="%s">', esc_url( twentyfifteen_get_link_url() ) ), '</a></h2>' );
 			endif;
 		?>
-	</header><!-- .entry-header -->
+	</header>
+	<!-- .entry-header -->
 
 	<div class="entry-content">
 		<?php
@@ -43,7 +41,8 @@
 				'separator'   => '<span class="screen-reader-text">, </span>',
 			) );
 		?>
-	</div><!-- .entry-content -->
+	</div>
+	<!-- .entry-content -->
 
 	<?php
 		// Author bio.
@@ -55,6 +54,7 @@
 	<footer class="entry-footer">
 		<?php twentyfifteen_entry_meta(); ?>
 		<?php edit_post_link( __( 'Edit', 'twentyfifteen' ), '<span class="edit-link">', '</span>' ); ?>
-	</footer><!-- .entry-footer -->
+	</footer>
+	<!-- .entry-footer -->
 
 </article><!-- #post-## -->
